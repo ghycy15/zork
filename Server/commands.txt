@@ -1,0 +1,19 @@
+' ' = :;:
+
+-------------------------------------------------------------------
+			User
+-------------------------------------------------------------------
+Resgister <username> <password>
+Resgister success/fail
+
+Login <username> <password>
+Login sucess/fail
+
+-------------------------------------------------------------------
+			Game
+-------------------------------------------------------------------
+SaveData <data slot no.> <in-game process>
+SaveData success/fail //要查游戏进度是否被串改么？
+
+GetData <username>
+GetData <data slot no.> <in-game process>*/empty/fail
