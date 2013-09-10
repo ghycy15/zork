@@ -9,11 +9,11 @@ public class Room {
 
 	private String name;
 	private String status;
-	private String type;
-	private String description;
+	String type;
+	String description;
 	private Map<String, Room> border;
 	private List<Container> container;
-	private List<Item> item;
+	List<Item> item;
 	private List<Creature> creature;
 	private List<Trigger> trigger;
 
