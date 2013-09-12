@@ -33,7 +33,7 @@ public class RequestHandler implements Runnable {
 					CommandHandler command = new CommandHandler(line);
 					String output = command.getReturn();
 					out.println(output);
-					//System.out.println(output);
+					System.out.println(output);
 				}
 			} finally {
 				socket.close();
