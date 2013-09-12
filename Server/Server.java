@@ -14,8 +14,9 @@ public class Server {
 			int i = 1;
 			ServerSocket socket = new ServerSocket(8089);
 			while(true) {
+				Socket s = socket.accept();
 				System.out.println("Spawning " + i);
-				Runnable run = new RequestHandler(socket.accept());
+				Runnable run = new RequestHandler(s);
 				Thread thread = new Thread(run);
 				thread.start();
 				i++;
