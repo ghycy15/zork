@@ -12,7 +12,7 @@ public class Server {
 	public static void main(String[] agrs) {
 		try {
 			int i = 1;
-			ServerSocket socket = new ServerSocket(8080);
+			ServerSocket socket = new ServerSocket(8089);
 			while(true) {
 				System.out.println("Spawning " + i);
 				Runnable run = new RequestHandler(socket.accept());
