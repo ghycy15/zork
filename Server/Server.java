@@ -1,10 +1,8 @@
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 /* Server
  * Multithreaded server that listens to port 8080
- * waiting connection of client
  *  
  * @author Jeanne Deng
  */

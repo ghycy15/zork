@@ -1,4 +1,14 @@
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/* DatabaseHandler
+ * Handles the database request for server.
+ * 
+ * @author Jeanne Deng
+ */
 
 public class DatabaseConnector {
 
@@ -73,7 +83,8 @@ public class DatabaseConnector {
 		ResultSet rs = executeQuery(query);
 		int id = -1;
 		try {
-			id = rs.next().getInt(0);
+			rs.next();
+			id = rs.getInt(0);
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -87,12 +98,17 @@ public class DatabaseConnector {
 
 	public boolean isValidLogin(String name, String password) {
 		String query = "SELECT password FROM Users WHERE name='" + name + "'";
-		Strimg result = executeQuery(query).next().getString(0);
-		if(result.equals(password)) {
-			return true;
-		} else {
-			return false;
+		ResultSet rs = executeQuery(query);
+		boolean result = false;
+		try {
+			rs.next();
+			if(rs.getString(0).equals(password)) {
+				result = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		return result;
 	}
 
 	public boolean updateUserData(String name, String slotNo, String gameProgress) {
@@ -108,7 +124,7 @@ public class DatabaseConnector {
 		String result = "";
 		try {
 			while(rs.next()) {
-				result += rs.getInt(0).toString() + ":;:" + rs.getString(1) + ":;:";
+				result += (new Integer(rs.getInt(0))).toString() + ":;:" + rs.getString(1) + ":;:";
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();

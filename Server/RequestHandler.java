@@ -1,4 +1,5 @@
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -30,7 +31,7 @@ public class RequestHandler implements Runnable {
 					}
 
 					CommandHandler command = new CommandHandler(line);
-					String output = command.getOutput();
+					String output = command.getReturn();
 					out.println(output);
 					//System.out.println(output);
 				}
