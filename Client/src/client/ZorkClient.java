@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ZorkClient {
 
-	public static String hostname = "128.46.101.71";
+	public static String hostname = "ec2-23-23-28-183.compute-1.amazonaws.com";
 	private static String REGISTER = "Resgister";
 	private static String LOGIN = "Login";
 	private static String SAVEDATA = "SaveData";
@@ -32,7 +32,7 @@ public class ZorkClient {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		try {
-			kkSocket = new Socket(hostname, 8080);
+			kkSocket = new Socket(hostname, 8089);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
 					kkSocket.getInputStream()));

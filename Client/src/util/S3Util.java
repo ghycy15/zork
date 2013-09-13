@@ -45,16 +45,30 @@ public class S3Util {
 	 *            : the file you want to upload
 	 * @param name
 	 *            : File name
+	 * 
+	 * 
 	 * @return if the upload is success, return true
 	 */
-	public boolean S3MapUpload(File file, String name) {
+	public boolean S3MapUpload(File file, String name, String userName,
+			boolean ifPublic) {
 
 		System.out.println("Uploading a new object to S3 from a file\n");
-		PutObjectRequest por = new PutObjectRequest(bucketName, "maps/" + name,
-				file);
+
+		if (ifPublic) {
+			PutObjectRequest por = new PutObjectRequest(bucketName,
+					"maps/public/" + name, file);
+
+			por.setCannedAcl(CannedAccessControlList.PublicRead);
+			s3.putObject(por);
+
+		}
+
+		PutObjectRequest por = new PutObjectRequest(bucketName, "maps/"
+				+ userName + "/" + name, file);
 
 		por.setCannedAcl(CannedAccessControlList.PublicRead);
 		s3.putObject(por);
+
 		return true;
 	}
 
@@ -64,16 +78,27 @@ public class S3Util {
 	 * @return List<String> list of name of maps
 	 * 
 	 */
-	public List<String> getMapsList() {
+	public List<String> getMapsList(String userName) {
 		List<String> maps = new ArrayList<String>();
 		ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
-				.withBucketName(bucketName)
-				.withPrefix("maps/")
+				.withBucketName(bucketName).withPrefix("maps/public/")
 				.withDelimiter("/");
 		ObjectListing objects = s3.listObjects(listObjectsRequest);
 
 		for (S3ObjectSummary objectSummary : objects.getObjectSummaries()) {
-			if (!objectSummary.getKey().equals("maps/")) {
+			if (!objectSummary.getKey().equals("maps/public")) {
+				System.out.println("get map: " + objectSummary.getKey());
+				maps.add(objectSummary.getKey());
+			}
+		}
+
+		ListObjectsRequest listObjectsRequest2 = new ListObjectsRequest()
+				.withBucketName(bucketName)
+				.withPrefix("maps/" + userName + "/").withDelimiter("/");
+		ObjectListing objects2 = s3.listObjects(listObjectsRequest);
+
+		for (S3ObjectSummary objectSummary : objects.getObjectSummaries()) {
+			if (!objectSummary.getKey().equals("maps/" + userName)) {
 				System.out.println("get map: " + objectSummary.getKey());
 				maps.add(objectSummary.getKey());
 			}
