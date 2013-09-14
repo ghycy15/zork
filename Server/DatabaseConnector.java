@@ -22,7 +22,6 @@ public class DatabaseConnector {
 		if(isConnected) {
 			return true;
 		}
-
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			con = DriverManager.getConnection(dburl, "cs408server", "server");
@@ -46,35 +45,31 @@ public class DatabaseConnector {
 
 	private synchronized ResultSet executeQuery(String query) {
 		this.connect();
-		ResultSet result = null;
-
 		if(!isConnected) {
 			return null;
 		}
+		ResultSet result = null;
 		try {
 			Statement stmt = con.createStatement();
 			result = stmt.executeQuery(query);
 		} catch(Exception e) {
 			result = null;
 		}
-
 		return result;
 	}
 
 	private synchronized boolean execute(String query) {
 		this.connect();
-		boolean result = true;
-
 		if(!isConnected) {
 			return false;
 		}
+		boolean result = true;
 		try {
 			Statement stmt = con.createStatement();
 			stmt.execute(query);
 		} catch(Exception e) {
 			result = false;
 		}
-
 		this.disconnect();
 		return result;
 	}
