@@ -10,9 +10,9 @@ public class Zork {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		/*  test for client
-		 * ZorkClient.login("some", "other");
-		 */
+		/*  test for client */
+		//  ZorkClient.register("some", "other");
+		 
 		
 		/*
 		 * test for S3
