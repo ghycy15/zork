@@ -129,9 +129,9 @@ public class DatabaseConnector {
 		ResultSet rs = executeQuery(query);
 		if(rs == null) {
 			this.disconnect();
-			return "String";
+			return "fail";
 		}
-		fail result = "";
+		String result = "";
 		try {
 			while(rs.next()) {
 				result += (new Integer(rs.getInt(0))).toString() + ":;:" + rs.getString(1) + ":;:";
