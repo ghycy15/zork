@@ -94,8 +94,8 @@ public class DatabaseConnector {
 
 	public boolean addUser(String name, String password) {
 		String query = "INSERT INTO Users (name, password) VALUES ('" + name + "','" + password + "')";
-		int userId = getUserId(name);
 		if(execute(query)) {
+			int userId = getUserId(name);
 			for(int i = 0; i < 10; i++) {
 				query = "INSERT INTO Progresses (userId, slotId, progress) VALUES ('" + userId + "','" + i + "','(empty)')";
 				execute(query);
