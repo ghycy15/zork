@@ -85,7 +85,7 @@ public class DatabaseConnector {
 		int id = -1;
 		try {
 			rs.next();
-			id = rs.getInt(0);
+			id = rs.getInt("id");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -115,7 +115,7 @@ public class DatabaseConnector {
 		boolean result = false;
 		try {
 			rs.next();
-			if(rs.getString(0).equals(password)) {
+			if(rs.getString("password").equals(password)) {
 				result = true;
 			}
 		} catch (SQLException e) {
@@ -142,7 +142,7 @@ public class DatabaseConnector {
 		String result = "";
 		try {
 			while(rs.next()) {
-				result += (new Integer(rs.getInt(0))).toString() + ":;:" + rs.getString(1) + ":;:";
+				result += (new Integer(rs.getInt("slotId"))).toString() + ":;:" + rs.getString("progress") + ":;:";
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();
