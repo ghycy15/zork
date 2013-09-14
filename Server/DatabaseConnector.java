@@ -85,7 +85,7 @@ public class DatabaseConnector {
 		int id = -1;
 		try {
 			rs.next();
-			id = rs.getInt(0);
+			id = rs.getInt("id");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -107,7 +107,7 @@ public class DatabaseConnector {
 		boolean result = false;
 		try {
 			rs.next();
-			if(rs.getString(0).equals(password)) {
+			if(rs.getString("password").equals(password)) {
 				result = true;
 			}
 		} catch (SQLException e) {
