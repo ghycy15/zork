@@ -99,6 +99,9 @@ public class DatabaseConnector {
 	public boolean isValidLogin(String name, String password) {
 		String query = "SELECT password FROM Users WHERE name='" + name + "'";
 		ResultSet rs = executeQuery(query);
+		if(rs == null) {
+			return false;
+		}
 		boolean result = false;
 		try {
 			rs.next();
@@ -121,7 +124,10 @@ public class DatabaseConnector {
 		int userId = this.getUserId(name);
 		String query = "SELECT slotId, progress FROM Progresses WHERE userId='" + userId + "'";
 		ResultSet rs = executeQuery(query);
-		String result = "";
+		if(rs == null) {
+			return "String";
+		}
+		fail result = "";
 		try {
 			while(rs.next()) {
 				result += (new Integer(rs.getInt(0))).toString() + ":;:" + rs.getString(1) + ":;:";

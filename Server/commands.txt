@@ -13,7 +13,7 @@ Login sucess/fail
 			Game
 -------------------------------------------------------------------
 SaveData <username> <data slot no.> <in-game process>
-SaveData success/fail //要查游戏进度是否被串改么？
+SaveData success/fail
 
 GetData <username>
 GetData <data slot no.> <in-game process>*/fail
