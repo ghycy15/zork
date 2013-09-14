@@ -56,7 +56,6 @@ public class DatabaseConnector {
 			result = stmt.executeQuery(query);
 		} catch(Exception e) {}
 
-		this.disconnect();
 		return result;
 	}
 
@@ -111,6 +110,7 @@ public class DatabaseConnector {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		this.disconnect();
 		return result;
 	}
 
@@ -135,6 +135,7 @@ public class DatabaseConnector {
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
+		this.disconnect();
 		return result.substring(0, result.length()-3);
 	}
 }
