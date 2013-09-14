@@ -54,7 +54,9 @@ public class DatabaseConnector {
 		try {
 			Statement stmt = con.createStatement();
 			result = stmt.executeQuery(query);
-		} catch(Exception e) {}
+		} catch(Exception e) {
+			result = null;
+		}
 
 		return result;
 	}
@@ -99,6 +101,7 @@ public class DatabaseConnector {
 		String query = "SELECT password FROM Users WHERE name='" + name + "'";
 		ResultSet rs = executeQuery(query);
 		if(rs == null) {
+			this.disconnect();
 			return false;
 		}
 		boolean result = false;
@@ -125,6 +128,7 @@ public class DatabaseConnector {
 		String query = "SELECT slotId, progress FROM Progresses WHERE userId='" + userId + "'";
 		ResultSet rs = executeQuery(query);
 		if(rs == null) {
+			this.disconnect();
 			return "String";
 		}
 		fail result = "";
