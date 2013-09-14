@@ -12,7 +12,7 @@ import java.util.Map;
 public class ZorkClient {
 
 	public static String hostname = "ec2-23-23-28-183.compute-1.amazonaws.com";
-	private static String REGISTER = "Resgister";
+	private static String REGISTER = "Register";
 	private static String LOGIN = "Login";
 	private static String SAVEDATA = "SaveData";
 	private static String GETDATA = "GetData";
@@ -49,8 +49,9 @@ public class ZorkClient {
 		try {
 			while ((fromServer = in.readLine()) != null) {
 				System.out.println(fromServer);
-				if (fromServer.equals("true")) {
+				if (fromServer.equals("Login:;:success")) {
 					succFromServer = true;
+					break;
 				}
 
 			}
@@ -78,7 +79,7 @@ public class ZorkClient {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		try {
-			kkSocket = new Socket(hostname, 8080);
+			kkSocket = new Socket(hostname, 8089);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
 					kkSocket.getInputStream()));
@@ -95,8 +96,9 @@ public class ZorkClient {
 		try {
 			while ((fromServer = in.readLine()) != null) {
 				System.out.println(fromServer);
-				if (fromServer.equals("true")) {
+				if (fromServer.equals("Register:;:success")) {
 					succFromServer = true;
+					break;
 				}
 
 			}
@@ -118,13 +120,13 @@ public class ZorkClient {
 	 * @param (String) game process
 	 * @return true if the server return true
 	 */
-	public static boolean saveData(int dataSlot, String gameProcess) {
+	public static boolean saveData(String userName, int dataSlot, String gameProcess) {
 
 		Socket kkSocket = null;
 		PrintWriter out = null;
 		BufferedReader in = null;
 		try {
-			kkSocket = new Socket(hostname, 8080);
+			kkSocket = new Socket(hostname, 8089);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
 					kkSocket.getInputStream()));
@@ -134,15 +136,16 @@ public class ZorkClient {
 			System.err.println("Couldn't get I/O for the connection");
 		}
 
-		out.println(SAVEDATA + SEPARATER + dataSlot + SEPARATER + gameProcess);
+		out.println(SAVEDATA + SEPARATER + userName + SEPARATER + dataSlot + SEPARATER + gameProcess);
 
 		String fromServer;
 		boolean succFromServer = false;
 		try {
 			while ((fromServer = in.readLine()) != null) {
 				System.out.println(fromServer);
-				if (fromServer.equals("true")) {
+				if (fromServer.equals("SaveData:;:success")) {
 					succFromServer = true;
+					break;
 				}
 
 			}
@@ -169,7 +172,7 @@ public class ZorkClient {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		try {
-			kkSocket = new Socket(hostname, 8080);
+			kkSocket = new Socket(hostname, 8089);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
 					kkSocket.getInputStream()));
@@ -187,11 +190,14 @@ public class ZorkClient {
 			while ((fromServer = in.readLine()) != null) {
 				System.out.println(fromServer);
 				String[] dataList = fromServer.split(SEPARATER);
-				if(!dataList[0].equals("GetData")){
-					return null;
+				//if(!dataList[0].equals("GetData")){
+				//	return null;
+				//}
+				for(int i =0; i<10;i++){
+				//System.out.println(Integer.valueOf(dataList[2*i+1])+ dataList[2*i+2]);
+				savedData.put(Integer.valueOf(dataList[2*i+1]), dataList[2*i+2]);
 				}
-				savedData.put(Integer.valueOf(dataList[1]), dataList[2]);
-				
+				break;
 			}
 			out.close();
 			in.close();
