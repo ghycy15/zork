@@ -52,6 +52,8 @@ public class ZorkClient {
 				if (fromServer.equals("Login:;:success")) {
 					succFromServer = true;
 					break;
+				}else{
+					break;
 				}
 
 			}
@@ -99,6 +101,8 @@ public class ZorkClient {
 				if (fromServer.equals("Register:;:success")) {
 					succFromServer = true;
 					break;
+				}else{
+					break;
 				}
 
 			}
@@ -145,6 +149,8 @@ public class ZorkClient {
 				System.out.println(fromServer);
 				if (fromServer.equals("SaveData:;:success")) {
 					succFromServer = true;
+					break;
+				}else{
 					break;
 				}
 

@@ -13,19 +13,19 @@ public class Zork {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-<<<<<<< HEAD
+
 		
 		/*  test for client */
 		//  ZorkClient.register("some", "other");
 		 
 		
-=======
+
 
 		/*
 		 * test for client ZorkClient.login("some", "other");
 		 */
 
->>>>>>> gun
+
 		/*
 		 * test for S3
 		 */
