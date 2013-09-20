@@ -132,7 +132,7 @@ public class DatabaseConnector {
 	public String getUserData(String name) {
 		int userId = this.getUserId(name);
 		if(userId == -1) {
-			return false;
+			return "fail";
 		}
 		String query = "SELECT slotId, progress FROM Progresses WHERE userId='" + userId + "'";
 		ResultSet rs = executeQuery(query);
