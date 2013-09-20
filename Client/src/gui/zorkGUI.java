@@ -9,12 +9,16 @@ import java.awt.event.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 
+import util.S3Util;
+
 import client.ZorkClient;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.regex.Pattern;
@@ -63,6 +67,7 @@ public class zorkGUI extends JFrame implements ActionListener {
     private JButton submitFile;
     private JPanel createPanel,renamePanel,radioPanel;
     private ButtonGroup createButtonGroup;
+    private File mapToUpload = null;
     
     // game play
 	private JPanel loadGamePanel = new JPanel(new GridLayout(8, 1));
@@ -78,6 +83,10 @@ public class zorkGUI extends JFrame implements ActionListener {
 		regHint.add(hintLabel);
 		totalRegister.add(regHint);
 
+		for (int i = 0; i < 10; ++i) {
+			dataButton[i] = new JButton();
+			dataButton[i].addActionListener(this);
+		}
 		JPanel loginName = new JPanel();
 		JLabel name = new JLabel("User Name");
 		loginName.add(name);
@@ -144,7 +153,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 
 		inputField = new JTextField();
 		playPanel.add(inputField, BorderLayout.SOUTH);
-
+        inputField.addActionListener(this);
 		/**
 		 * These are for main GUI
 		 * **/
@@ -356,8 +365,15 @@ public class zorkGUI extends JFrame implements ActionListener {
 				content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 
 			}
-
+			S3Util s3Util = new S3Util();
+			List<String> maps= s3Util.getMapsList(superUserName);
 			// content.add(totalRegister,BorderLayout.CENTER);
+			Iterator<String> mapsIter = maps.iterator();
+			int i = 0;
+			while(i<10 && mapsIter.hasNext()){
+				System.out.println(mapsIter.next());
+				
+			}
 			guiRefresh = 1;
 
 		}
@@ -380,11 +396,9 @@ public class zorkGUI extends JFrame implements ActionListener {
 			// ZorkClient.saveData(superUserName,1, "some data");
 			Map<Integer, String> dataSlot = ZorkClient.getData(superUserName);
 			for (int i = 0; i < 10; ++i) {
-				dataButton[i] = new JButton();
 				System.out.println(dataSlot.get(i));
 				dataButton[i].setText(dataSlot.get(i));
 				loadGamePanel.add(dataButton[i]);
-				dataButton[i].addActionListener(this);
 
 			}
 
@@ -416,17 +430,17 @@ public class zorkGUI extends JFrame implements ActionListener {
 			};
 			fileChooser.addChoosableFileFilter(fliter);
 			int returnVal = fileChooser.showOpenDialog(content);
-			File newFile = null;
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-            	newFile = fileChooser.getSelectedFile();
+            	mapToUpload = fileChooser.getSelectedFile();
             }
-            if(newFile != null)	{
+            if(mapToUpload != null)	{
                 setPrivate = new JRadioButton("private");            
                 setPublic = new JRadioButton("public");
                 setPublic.setSelected(true);
                 
-                fileNameField = new JTextField(newFile.getName(),30);
+                fileNameField = new JTextField(mapToUpload.getName(),30);
                 submitFile = new JButton("Submit");
+                submitFile.addActionListener(this);
                 createPanel = new JPanel(new BorderLayout());
                 createButtonGroup = new ButtonGroup();
                 createButtonGroup.add(setPrivate);
@@ -454,6 +468,24 @@ public class zorkGUI extends JFrame implements ActionListener {
 		}
 		
 		if (e.getSource() == submitFile){
+			S3Util s3Util = new S3Util();
+			if(fileNameField.getText().equals("")){
+				JOptionPane.showMessageDialog(this,"The map name can not be empty");
+			}
+			if(setPrivate.isSelected()){
+				s3Util.S3MapUpload(mapToUpload, fileNameField.getText(), superUserName, false);
+			}
+			else{
+				s3Util.S3MapUpload(mapToUpload, fileNameField.getText(), superUserName, true);	
+			}
+		}
+		
+		if(e.getSource() == inputField){
+			System.out.print(inputField.getText());
+			
+			gameProcessField.append(inputField.getText() + "\n");
+			inputField.setText("");
+			
 			
 		}
 
@@ -464,9 +496,6 @@ public class zorkGUI extends JFrame implements ActionListener {
 				}
 				content.add(playPanel, BorderLayout.CENTER);
 				gameProcessField.append("hello\n");
-				for (int c = 0; c < 100; c++) {
-					gameProcessField.append(c + "\n");
-				}
 				guiRefresh = 1;
 
 			}
