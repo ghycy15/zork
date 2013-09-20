@@ -39,6 +39,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 	private JScrollPane sp;
 	private JTextArea gameProcessField;
 	private JTextField inputField;
+	protected String currentGame = null;
 	// private JFileChooser fc; //file chooser to choose file
 
 	// Variable for Register
@@ -72,7 +73,19 @@ public class zorkGUI extends JFrame implements ActionListener {
     // game play
 	private JPanel loadGamePanel = new JPanel(new GridLayout(8, 1));
 	private JPanel playPanel;
-
+	
+	// new game
+	private int numMaps = 0;
+	private int lowCount = 0, highCount = 0;
+	private JButton mapButton[] = new JButton[8];
+	private JButton nextButton, prevButton;
+	private JPanel gamePanel,mapPanel;
+	private List<String> maps;
+	
+	//save
+	private JButton saveButton[] = new JButton[10];
+	private JPanel savePanel;
+	
 	public zorkGUI() {
 
 		/**
@@ -85,8 +98,25 @@ public class zorkGUI extends JFrame implements ActionListener {
 
 		for (int i = 0; i < 10; ++i) {
 			dataButton[i] = new JButton();
-			dataButton[i].addActionListener(this);
+			dataButton[i].addActionListener(this);	
 		}
+		for (int i = 0; i < 10; ++i) {
+			saveButton[i] = new JButton();
+			saveButton[i].addActionListener(this);	
+		}
+		
+		nextButton = new JButton("Next");
+		nextButton.addActionListener(this);
+		prevButton = new JButton("Previous");
+		prevButton.addActionListener(this);
+		gamePanel = new JPanel(new FlowLayout());
+		mapPanel = new JPanel(new GridLayout(5, 2));
+		savePanel = new JPanel(new GridLayout(5, 2));	
+		for (int i = 0; i < 8; ++i) {
+			mapButton[i] = new JButton();
+			mapButton[i].addActionListener(this);	
+		}
+		
 		JPanel loginName = new JPanel();
 		JLabel name = new JLabel("User Name");
 		loginName.add(name);
@@ -189,6 +219,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 
 		saveGame = new JMenuItem("Save Game");
 		saveGame.addActionListener(this);
+		saveGame.setEnabled(false);
 		loadGame = new JMenuItem("Load Game");
 		loadGame.addActionListener(this);
 		saveAndLoad.add(saveGame);
@@ -248,23 +279,6 @@ public class zorkGUI extends JFrame implements ActionListener {
 					hintLabel.setText("Hint: User [" + userName
 							+ "] alreay exist.");
 				} else {
-					// //Store User Info
-					// FileOutputStream file=null;
-					// try {
-					// file = new FileOutputStream("login.txt",true);
-					// }catch(IOException i)
-					// {i.printStackTrace();}
-					// try {
-					// file.write((user.toString()).getBytes());
-					// } catch (IOException ioe)
-					// {
-					// ioe.printStackTrace();
-					// }
-					// try {
-					// file.close();
-					// } catch (IOException ie) {
-					// ie.printStackTrace();
-					// }
 					hintLabel.setText("Hint: User [" + userName
 							+ "] registered successfully.");
 				}
@@ -365,15 +379,30 @@ public class zorkGUI extends JFrame implements ActionListener {
 				content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 
 			}
+			saveGame.setEnabled(false);
 			S3Util s3Util = new S3Util();
-			List<String> maps= s3Util.getMapsList(superUserName);
-			// content.add(totalRegister,BorderLayout.CENTER);
-			Iterator<String> mapsIter = maps.iterator();
-			int i = 0;
-			while(i<10 && mapsIter.hasNext()){
-				System.out.println(mapsIter.next());
-				
+			maps= s3Util.getMapsList(superUserName);
+			numMaps = maps.size();
+
+			for (int i = 0; i < 8; ++i) {
+				if(i + lowCount< numMaps)
+				mapButton[i].setText(maps.get(lowCount + i));
+				mapPanel.add(mapButton[i]);
 			}
+			
+			lowCount = 8;
+			
+			mapPanel.add(prevButton);
+			mapPanel.add(nextButton);
+
+			if(lowCount > numMaps){
+				nextButton.setEnabled(false);
+			}
+			
+			prevButton.setEnabled(false);
+			
+			content.add(mapPanel, BorderLayout.CENTER);
+			
 			guiRefresh = 1;
 
 		}
@@ -384,15 +413,61 @@ public class zorkGUI extends JFrame implements ActionListener {
 			}
 
 			// content.add(totalLogin,BorderLayout.CENTER);
+			Map<Integer, String> dataSlot = ZorkClient.getData(superUserName);
+			for (int i = 0; i < 10; ++i) {
+				System.out.println(dataSlot.get(i));
+				saveButton[i].setText(dataSlot.get(i));
+				savePanel.add(saveButton[i]);
+
+			}
+
+			content.add(savePanel, BorderLayout.CENTER);
+			
 			guiRefresh = 1;
 
 		}
+		
+		if(e.getSource() == nextButton) {
+			for (int i = 0; i < 8; ++i) {
+				if(i + lowCount< numMaps){
+					mapButton[i].setText(maps.get(lowCount + i));
+				}else{
+					mapButton[i].setText("");
+				}
+			}
+			
+			lowCount += 8;
+			if(lowCount > numMaps){
+				nextButton.setEnabled(false);
+			}
+			
+			prevButton.setEnabled(true);
+		}
+		
+		if(e.getSource() == prevButton) {
+			lowCount -= 8;
+			
+			for (int i = 0; i < 8; ++i) {
+				mapButton[i].setText(maps.get(lowCount - (8-i)));
+
+			}
+			
+
+			nextButton.setEnabled(true);
+			
+			if(lowCount == 8) {
+				prevButton.setEnabled(false);
+			}
+			
+		}
+		
 		if (e.getSource() == loadGame) {
 
 			if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
 				content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 			}
 
+			saveGame.setEnabled(false);
 			// ZorkClient.saveData(superUserName,1, "some data");
 			Map<Integer, String> dataSlot = ZorkClient.getData(superUserName);
 			for (int i = 0; i < 10; ++i) {
@@ -489,6 +564,35 @@ public class zorkGUI extends JFrame implements ActionListener {
 			
 		}
 
+		for (int i = 0; i < 8; i++) {
+			if (e.getSource() == mapButton[i]) {
+				if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+					content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
+				}
+				S3Util s3util = new S3Util();
+				s3util.getMap(mapButton[i].getText());
+				currentGame = mapButton[i].getText();
+				content.add(playPanel, BorderLayout.CENTER);
+				saveGame.setEnabled(true);
+				gameProcessField.append("hello\n");
+				guiRefresh = 1;
+
+			}
+
+		}
+		
+		for (int i = 0; i < 10; i++) {
+			if (e.getSource() == dataButton[i]) {
+				if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+					content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
+				}
+				content.add(playPanel, BorderLayout.CENTER);
+				gameProcessField.append("hello\n");
+				saveGame.setEnabled(true);
+				guiRefresh = 1;
+			}
+		}
+		
 		for (int i = 0; i < 10; i++) {
 			if (e.getSource() == dataButton[i]) {
 				if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
@@ -497,9 +601,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 				content.add(playPanel, BorderLayout.CENTER);
 				gameProcessField.append("hello\n");
 				guiRefresh = 1;
-
 			}
-
 		}
 		content.revalidate();
 		content.repaint();
