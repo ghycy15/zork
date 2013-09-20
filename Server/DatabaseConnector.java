@@ -122,12 +122,18 @@ public class DatabaseConnector {
 
 	public boolean updateUserData(String name, String slotNo, String gameProgress) {
 		int userId = this.getUserId(name);
+		if(userId == -1) {
+			return false;
+		}
 		String query = "UPDATE Progresses SET progress='" + gameProgress + "' WHERE userId='" + userId + "' AND slotId='" + slotNo + "'";
 		return execute(query);
 	}
 
 	public String getUserData(String name) {
 		int userId = this.getUserId(name);
+		if(userId == -1) {
+			return false;
+		}
 		String query = "SELECT slotId, progress FROM Progresses WHERE userId='" + userId + "'";
 		ResultSet rs = executeQuery(query);
 		if(rs == null) {
