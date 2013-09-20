@@ -95,9 +95,9 @@ public class S3Util {
 		ListObjectsRequest listObjectsRequest2 = new ListObjectsRequest()
 				.withBucketName(bucketName)
 				.withPrefix("maps/" + userName + "/").withDelimiter("/");
-		ObjectListing objects2 = s3.listObjects(listObjectsRequest);
+		ObjectListing objects2 = s3.listObjects(listObjectsRequest2);
 
-		for (S3ObjectSummary objectSummary : objects.getObjectSummaries()) {
+		for (S3ObjectSummary objectSummary : objects2.getObjectSummaries()) {
 			if (!objectSummary.getKey().equals("maps/" + userName)) {
 				System.out.println("get map: " + objectSummary.getKey());
 				maps.add(objectSummary.getKey());
