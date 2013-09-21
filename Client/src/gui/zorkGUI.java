@@ -9,6 +9,8 @@ import java.awt.event.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 
+import component.Zork;
+
 import util.S3Util;
 
 import client.ZorkClient;
@@ -73,6 +75,7 @@ public class zorkGUI extends JFrame implements ActionListener {
     // game play
 	private JPanel loadGamePanel = new JPanel(new GridLayout(8, 1));
 	private JPanel playPanel;
+	private Zork zork;
 	
 	// new game
 	private int numMaps = 0;
@@ -175,6 +178,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 
 		gameProcessField = new JTextArea();
 		gameProcessField.setEditable(false);
+		gameProcessField.setLineWrap(true);
 		DefaultCaret caret = (DefaultCaret) gameProcessField.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		sp = new JScrollPane(gameProcessField);
@@ -557,8 +561,8 @@ public class zorkGUI extends JFrame implements ActionListener {
 		
 		if(e.getSource() == inputField){
 			System.out.print(inputField.getText());
-			
-			gameProcessField.append(inputField.getText() + "\n");
+			String result = zork.action(inputField.getText());
+			gameProcessField.append(result + "\n");
 			inputField.setText("");
 			
 			
@@ -574,7 +578,8 @@ public class zorkGUI extends JFrame implements ActionListener {
 				currentGame = mapButton[i].getText();
 				content.add(playPanel, BorderLayout.CENTER);
 				saveGame.setEnabled(true);
-				gameProcessField.append("hello\n");
+				zork = new Zork(currentGame);
+				gameProcessField.append(zork.welcome + "\n");
 				guiRefresh = 1;
 
 			}
