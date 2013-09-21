@@ -22,7 +22,7 @@ public class Zork {
 	public String currentRoom;
 	public String welcome;
 	
-		public Zork(String filename)
+		public Zork(String filename) throws Exception
 		  {
 		    int i,j,k,l,x,y,z;
 
@@ -557,7 +557,7 @@ public class Zork {
 		    catch (Exception e)
 		    {
 		      System.out.println("Invalid XML file, exiting");
-		      System.exit(-1);
+		      throw new Exception(e);
 		      //e.printStackTrace();
 		      }
 
@@ -810,6 +810,7 @@ public class Zork {
 		            for (y=0;y<tempCreature.print.size();y++)
 		            {
 		              System.out.println(tempCreature.print.get(y));
+		              result = result + "\n" + tempCreature.print.get(y);
 		            }
 		            for (y=0;y<tempCreature.action.size();y++)
 		            {
@@ -842,11 +843,11 @@ public class Zork {
 
 		    }
 		    userInput = "";
-		    
-		    if(checkAllTriggers()){
+		    checkAllTriggers();
+		    if(!output.equals("")){
 		    	result = result + "\n" + output;
 		    }
-
+		    System.out.println("\noutput:"+output +"output");
 		    return result;
 		  }
 
@@ -861,7 +862,7 @@ public class Zork {
 		  /* Check triggers */
 		  public boolean checkAllTriggers()
 		  {
-		 
+			  output = "";
 		    /*Variable initialization*/
 		    boolean skip=false;
 		    int i,j,k,l,x,y,z;
@@ -875,8 +876,8 @@ public class Zork {
 		      {
 		        for (y=0;y<tempTrigger.print.size();y++)
 		        {
-		          System.out.println(tempTrigger.print.get(y));
-		          output = tempTrigger.print.get(y);
+		          //System.out.println(tempTrigger.print.get(y));
+		          output += tempTrigger.print.get(y);
 		        }
 		        for (y=0;y<tempTrigger.action.size();y++)
 		        {
@@ -907,7 +908,7 @@ public class Zork {
 		          {
 		            for (y=0;y<tempTrigger.print.size();y++)
 		            {
-		              System.out.println(tempTrigger.print.get(y));
+		              //System.out.println(tempTrigger.print.get(y));
 		              output += tempTrigger.print.get(y);
 		            }
 		            for (y=0;y<tempTrigger.action.size();y++)
@@ -934,7 +935,7 @@ public class Zork {
 		        {
 		          for (y=0;y<tempTrigger.print.size();y++)
 		          {
-		            System.out.println(tempTrigger.print.get(y));
+		            //System.out.println(tempTrigger.print.get(y));
 		            output += tempTrigger.print.get(y);
 		          }
 		          for (y=0;y<tempTrigger.action.size();y++)
@@ -964,7 +965,7 @@ public class Zork {
 		        {
 		          for (y=0;y<tempTrigger.print.size();y++)
 		          {
-		            System.out.println(tempTrigger.print.get(y));
+		            //System.out.println(tempTrigger.print.get(y));
 		            output += tempTrigger.print.get(y);
 		          }
 		          for (y=0;y<tempTrigger.action.size();y++)
@@ -994,7 +995,7 @@ public class Zork {
 		        {
 		          for (y=0;y<tempTrigger.print.size();y++)
 		          {
-		            System.out.println(tempTrigger.print.get(y));
+		            //System.out.println(tempTrigger.print.get(y));
 		            output += tempTrigger.print.get(y);
 		          }
 		          for (y=0;y<tempTrigger.action.size();y++)
@@ -1024,7 +1025,7 @@ public class Zork {
 		        {
 		          for (y=0;y<tempTrigger.print.size();y++)
 		          {
-		            System.out.println(tempTrigger.print.get(y));
+		            //System.out.println(tempTrigger.print.get(y));
 		            output += tempTrigger.print.get(y);
 		          }
 		          for (y=0;y<tempTrigger.action.size();y++)

@@ -181,6 +181,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 		gameProcessField.setLineWrap(true);
 		DefaultCaret caret = (DefaultCaret) gameProcessField.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		gameProcessField.setCaret(caret);
 		sp = new JScrollPane(gameProcessField);
 		playPanel.add(new Label("Game process:"), BorderLayout.NORTH);
 		playPanel.add(sp, BorderLayout.CENTER);
@@ -193,15 +194,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 		 * **/
 
 		content.setLayout(bl);
-		// initialize file chooser
-		// fc = new JFileChooser();
-		// fr.setFocusable(false);
-		// initialize the display window
-		// image=new JLabel();
-		// pane=new JScrollPane();
 		text = new JLabel("Console Output: ");
-
-		// content.add(text,BorderLayout.SOUTH);
 
 		menuBar = new JMenuBar();
 
@@ -512,6 +505,16 @@ public class zorkGUI extends JFrame implements ActionListener {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
             	mapToUpload = fileChooser.getSelectedFile();
             }
+            
+            try {
+				new Zork(mapToUpload.getPath());
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this,"The xml file is invaild");
+				mapToUpload = null;
+			}
+            
             if(mapToUpload != null)	{
                 setPrivate = new JRadioButton("private");            
                 setPublic = new JRadioButton("public");
@@ -541,7 +544,7 @@ public class zorkGUI extends JFrame implements ActionListener {
             	
             }
 
-            
+            JOptionPane.showMessageDialog(this,"The map is successfully submited");
 			guiRefresh = 1;
 
 		}
@@ -561,8 +564,9 @@ public class zorkGUI extends JFrame implements ActionListener {
 		
 		if(e.getSource() == inputField){
 			System.out.print(inputField.getText());
+			gameProcessField.append("User input >> " + inputField.getText() + "\n");
 			String result = zork.action(inputField.getText());
-			gameProcessField.append(result + "\n");
+			gameProcessField.append(result + "\n\n");
 			inputField.setText("");
 			
 			
@@ -578,7 +582,14 @@ public class zorkGUI extends JFrame implements ActionListener {
 				currentGame = mapButton[i].getText();
 				content.add(playPanel, BorderLayout.CENTER);
 				saveGame.setEnabled(true);
-				zork = new Zork(currentGame);
+				try {
+					zork = new Zork(currentGame);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(this,"The map is invalided!");
+					e1.printStackTrace();
+				}
+				gameProcessField.setText("");
 				gameProcessField.append(zork.welcome + "\n");
 				guiRefresh = 1;
 
@@ -592,19 +603,18 @@ public class zorkGUI extends JFrame implements ActionListener {
 					content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 				}
 				content.add(playPanel, BorderLayout.CENTER);
-				gameProcessField.append("hello\n");
+				gameProcessField.append(zork.welcome + "\n");
+				gameProcessField.setText("");
 				saveGame.setEnabled(true);
 				guiRefresh = 1;
 			}
 		}
 		
 		for (int i = 0; i < 10; i++) {
-			if (e.getSource() == dataButton[i]) {
+			if (e.getSource() == saveButton[i]) {
 				if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
 					content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 				}
-				content.add(playPanel, BorderLayout.CENTER);
-				gameProcessField.append("hello\n");
 				guiRefresh = 1;
 			}
 		}
