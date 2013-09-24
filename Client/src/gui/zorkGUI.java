@@ -32,7 +32,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 	public JPanel content = new JPanel();
 	private BorderLayout bl = new BorderLayout();
 	private JLabel image, text, titleLabel; // contains the image to display
-			// private JScrollPane pane; //scrollable pane that holds the image
+	// private JScrollPane pane; //scrollable pane that holds the image
 	private JMenuBar menuBar; // the menubar
 	private JMenu registerAndLogin, saveAndLoad;// map;
 	private JMenuItem register, login, newGame, saveGame, loadGame, createGame;// saveMap,loadMap;
@@ -42,6 +42,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 	private JTextArea gameProcessField;
 	private JTextField inputField;
 	protected String currentGame = null;
+	private Map<Integer, String> dataSlot = null;
 	// private JFileChooser fc; //file chooser to choose file
 
 	// Variable for Register
@@ -62,33 +63,33 @@ public class zorkGUI extends JFrame implements ActionListener {
 	private JButton loginLogin = new JButton("Login");
 	private JButton loginReset = new JButton("Reset");
 	private JButton loginCancel = new JButton("Cancel");
-	
+
 	// create
-    private JFileChooser fileChooser;
-    private JRadioButton setPrivate, setPublic;
-    private JTextField fileNameField;
-    private JButton submitFile;
-    private JPanel createPanel,renamePanel,radioPanel;
-    private ButtonGroup createButtonGroup;
-    private File mapToUpload = null;
-    
-    // game play
+	private JFileChooser fileChooser;
+	private JRadioButton setPrivate, setPublic;
+	private JTextField fileNameField;
+	private JButton submitFile;
+	private JPanel createPanel, renamePanel, radioPanel;
+	private ButtonGroup createButtonGroup;
+	private File mapToUpload = null;
+
+	// game play
 	private JPanel loadGamePanel = new JPanel(new GridLayout(8, 1));
 	private JPanel playPanel;
 	private Zork zork;
-	
+
 	// new game
 	private int numMaps = 0;
 	private int lowCount = 0, highCount = 0;
 	private JButton mapButton[] = new JButton[8];
 	private JButton nextButton, prevButton;
-	private JPanel gamePanel,mapPanel;
+	private JPanel gamePanel, mapPanel;
 	private List<String> maps;
-	
-	//save
+
+	// save
 	private JButton saveButton[] = new JButton[10];
 	private JPanel savePanel;
-	
+
 	public zorkGUI() {
 
 		/**
@@ -101,25 +102,25 @@ public class zorkGUI extends JFrame implements ActionListener {
 
 		for (int i = 0; i < 10; ++i) {
 			dataButton[i] = new JButton();
-			dataButton[i].addActionListener(this);	
+			dataButton[i].addActionListener(this);
 		}
 		for (int i = 0; i < 10; ++i) {
 			saveButton[i] = new JButton();
-			saveButton[i].addActionListener(this);	
+			saveButton[i].addActionListener(this);
 		}
-		
+
 		nextButton = new JButton("Next");
 		nextButton.addActionListener(this);
 		prevButton = new JButton("Previous");
 		prevButton.addActionListener(this);
 		gamePanel = new JPanel(new FlowLayout());
 		mapPanel = new JPanel(new GridLayout(5, 2));
-		savePanel = new JPanel(new GridLayout(5, 2));	
+		savePanel = new JPanel(new GridLayout(5, 2));
 		for (int i = 0; i < 8; ++i) {
 			mapButton[i] = new JButton();
-			mapButton[i].addActionListener(this);	
+			mapButton[i].addActionListener(this);
 		}
-		
+
 		JPanel loginName = new JPanel();
 		JLabel name = new JLabel("User Name");
 		loginName.add(name);
@@ -188,7 +189,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 
 		inputField = new JTextField();
 		playPanel.add(inputField, BorderLayout.SOUTH);
-        inputField.addActionListener(this);
+		inputField.addActionListener(this);
 		/**
 		 * These are for main GUI
 		 * **/
@@ -307,7 +308,7 @@ public class zorkGUI extends JFrame implements ActionListener {
 			} else if ("".equals(luserPassword)) {
 				loginHintLabel.setText("Invalid Password");
 			} else {
-				boolean flag;// if registered
+				boolean flag = false;// if registered
 				// User luser=new User(luserName,luserPassword);
 				// User userChecked=User.check(luser);
 				// if(userChecked!=null){
@@ -316,7 +317,14 @@ public class zorkGUI extends JFrame implements ActionListener {
 				// else{
 				// flag=false;
 				// }
-				flag = ZorkClient.login(luserName, luserPassword);
+
+				try {
+					flag = ZorkClient.login(luserName, luserPassword);
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(this,
+							"Please check your internet connection");
+
+				}
 				superUserName = luserName;
 				if (flag == false) {
 					loginHintLabel.setText("Hint: User [" + luserName
@@ -353,7 +361,8 @@ public class zorkGUI extends JFrame implements ActionListener {
 
 		if (e.getSource() == register) {
 
-			if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+			if (guiRefresh == 1
+					&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 				content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 			}
 			content.add(totalRegister, BorderLayout.CENTER);
@@ -362,7 +371,8 @@ public class zorkGUI extends JFrame implements ActionListener {
 		}
 		if (e.getSource() == login) {
 
-			if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+			if (guiRefresh == 1
+					&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 				content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 			}
 			content.add(totalLogin, BorderLayout.CENTER);
@@ -372,104 +382,116 @@ public class zorkGUI extends JFrame implements ActionListener {
 
 		if (e.getSource() == newGame) {
 
-			if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+			if (guiRefresh == 1
+					&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 				content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 
 			}
 			saveGame.setEnabled(false);
 			S3Util s3Util = new S3Util();
-			maps= s3Util.getMapsList(superUserName);
+			maps = s3Util.getMapsList(superUserName);
 			numMaps = maps.size();
 
 			for (int i = 0; i < 8; ++i) {
-				if(i + lowCount< numMaps)
-				mapButton[i].setText(maps.get(lowCount + i));
+				if (i + lowCount < numMaps)
+					mapButton[i].setText(maps.get(lowCount + i));
 				mapPanel.add(mapButton[i]);
 			}
-			
+
 			lowCount = 8;
-			
+
 			mapPanel.add(prevButton);
 			mapPanel.add(nextButton);
 
-			if(lowCount > numMaps){
+			if (lowCount > numMaps) {
 				nextButton.setEnabled(false);
 			}
-			
+
 			prevButton.setEnabled(false);
-			
+
 			content.add(mapPanel, BorderLayout.CENTER);
-			
+
 			guiRefresh = 1;
 
 		}
 		if (e.getSource() == saveGame) {
 
-			if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+			if (guiRefresh == 1
+					&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 				content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 			}
 
 			// content.add(totalLogin,BorderLayout.CENTER);
-			Map<Integer, String> dataSlot = ZorkClient.getData(superUserName);
+			dataSlot = ZorkClient.getData(superUserName);
 			for (int i = 0; i < 10; ++i) {
 				System.out.println(dataSlot.get(i));
-				saveButton[i].setText(dataSlot.get(i));
+				if (!dataSlot.get(i).equals("(empty)")) {
+					saveButton[i].setText(dataSlot.get(i).split("::")[0] + " "
+							+ dataSlot.get(i).split("::")[1]);
+				} else {
+					saveButton[i].setText(dataSlot.get(i));
+				}
+				
 				savePanel.add(saveButton[i]);
-
 			}
-
-			content.add(savePanel, BorderLayout.CENTER);
 			
+			content.add(savePanel, BorderLayout.CENTER);
+
 			guiRefresh = 1;
 
 		}
-		
-		if(e.getSource() == nextButton) {
+
+		if (e.getSource() == nextButton) {
 			for (int i = 0; i < 8; ++i) {
-				if(i + lowCount< numMaps){
+				if (i + lowCount < numMaps) {
 					mapButton[i].setText(maps.get(lowCount + i));
-				}else{
+				} else {
 					mapButton[i].setText("");
 				}
 			}
-			
+
 			lowCount += 8;
-			if(lowCount > numMaps){
+			if (lowCount > numMaps) {
 				nextButton.setEnabled(false);
 			}
-			
+
 			prevButton.setEnabled(true);
 		}
-		
-		if(e.getSource() == prevButton) {
+
+		if (e.getSource() == prevButton) {
 			lowCount -= 8;
-			
+
 			for (int i = 0; i < 8; ++i) {
-				mapButton[i].setText(maps.get(lowCount - (8-i)));
+				mapButton[i].setText(maps.get(lowCount - (8 - i)));
 
 			}
-			
 
 			nextButton.setEnabled(true);
-			
-			if(lowCount == 8) {
+
+			if (lowCount == 8) {
 				prevButton.setEnabled(false);
 			}
-			
+
 		}
-		
+
 		if (e.getSource() == loadGame) {
 
-			if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+			if (guiRefresh == 1
+					&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 				content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 			}
 
 			saveGame.setEnabled(false);
 			// ZorkClient.saveData(superUserName,1, "some data");
-			Map<Integer, String> dataSlot = ZorkClient.getData(superUserName);
+			dataSlot = ZorkClient.getData(superUserName);
 			for (int i = 0; i < 10; ++i) {
 				System.out.println(dataSlot.get(i));
-				dataButton[i].setText(dataSlot.get(i));
+				if (!dataSlot.get(i).equals("(empty)")) {
+					dataButton[i].setText(dataSlot.get(i).split("::")[0] + " "
+							+ dataSlot.get(i).split("::")[1]);
+				} else {
+					dataButton[i].setText(dataSlot.get(i));
+				}
 				loadGamePanel.add(dataButton[i]);
 
 			}
@@ -480,101 +502,107 @@ public class zorkGUI extends JFrame implements ActionListener {
 		}
 		if (e.getSource() == createGame) {
 
-			if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+			if (guiRefresh == 1
+					&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 				content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 			}
 
-			
-			fileChooser = new JFileChooser("Please choose a map to upload (xml format)");
+			fileChooser = new JFileChooser(
+					"Please choose a map to upload (xml format)");
 			FileFilter fliter = new FileFilter() {
-				 
-			    public String getDescription() {
-			        return "XML Documents (*.xml)";
-			    }
-			 
-			    public boolean accept(File f) {
-			        if (f.isDirectory()) {
-			            return true;
-			        } else {
-			            return f.getName().toLowerCase().endsWith(".xml");
-			        }
-			    }
+
+				public String getDescription() {
+					return "XML Documents (*.xml)";
+				}
+
+				public boolean accept(File f) {
+					if (f.isDirectory()) {
+						return true;
+					} else {
+						return f.getName().toLowerCase().endsWith(".xml");
+					}
+				}
 			};
 			fileChooser.addChoosableFileFilter(fliter);
 			int returnVal = fileChooser.showOpenDialog(content);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-            	mapToUpload = fileChooser.getSelectedFile();
-            }
-            
-            try {
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				mapToUpload = fileChooser.getSelectedFile();
+			}
+
+			try {
 				new Zork(mapToUpload.getPath());
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this,"The xml file is invaild");
+				JOptionPane.showMessageDialog(this, "The xml file is invaild");
 				mapToUpload = null;
 			}
-            
-            if(mapToUpload != null)	{
-                setPrivate = new JRadioButton("private");            
-                setPublic = new JRadioButton("public");
-                setPublic.setSelected(true);
-                
-                fileNameField = new JTextField(mapToUpload.getName(),30);
-                submitFile = new JButton("Submit");
-                submitFile.addActionListener(this);
-                createPanel = new JPanel(new BorderLayout());
-                createButtonGroup = new ButtonGroup();
-                createButtonGroup.add(setPrivate);
-                createButtonGroup.add(setPublic);
-                
-                renamePanel = new JPanel(new FlowLayout());
-                renamePanel.add(new Label("MapName"));
-                renamePanel.add(fileNameField);
-                
-                radioPanel = new JPanel(new FlowLayout());
-                radioPanel.add(new Label("Do you want to make the map private or public?"));
-                radioPanel.add(setPublic);
-                radioPanel.add(setPrivate);
-                createPanel.add(renamePanel,BorderLayout.NORTH);
-                createPanel.add(radioPanel,BorderLayout.CENTER);
-                createPanel.add(submitFile,BorderLayout.SOUTH);
-                
-                content.add(createPanel, BorderLayout.CENTER);
-            	
-            }
 
-            JOptionPane.showMessageDialog(this,"The map is successfully submited");
+			if (mapToUpload != null) {
+				setPrivate = new JRadioButton("private");
+				setPublic = new JRadioButton("public");
+				setPublic.setSelected(true);
+
+				fileNameField = new JTextField(mapToUpload.getName(), 30);
+				submitFile = new JButton("Submit");
+				submitFile.addActionListener(this);
+				createPanel = new JPanel(new BorderLayout());
+				createButtonGroup = new ButtonGroup();
+				createButtonGroup.add(setPrivate);
+				createButtonGroup.add(setPublic);
+
+				renamePanel = new JPanel(new FlowLayout());
+				renamePanel.add(new Label("MapName"));
+				renamePanel.add(fileNameField);
+
+				radioPanel = new JPanel(new FlowLayout());
+				radioPanel.add(new Label(
+						"Do you want to make the map private or public?"));
+				radioPanel.add(setPublic);
+				radioPanel.add(setPrivate);
+				createPanel.add(renamePanel, BorderLayout.NORTH);
+				createPanel.add(radioPanel, BorderLayout.CENTER);
+				createPanel.add(submitFile, BorderLayout.SOUTH);
+
+				content.add(createPanel, BorderLayout.CENTER);
+
+			}
+
 			guiRefresh = 1;
 
 		}
-		
-		if (e.getSource() == submitFile){
+
+		if (e.getSource() == submitFile) {
 			S3Util s3Util = new S3Util();
-			if(fileNameField.getText().equals("")){
-				JOptionPane.showMessageDialog(this,"The map name can not be empty");
+			if (fileNameField.getText().equals("")) {
+				JOptionPane.showMessageDialog(this,
+						"The map name can not be empty");
 			}
-			if(setPrivate.isSelected()){
-				s3Util.S3MapUpload(mapToUpload, fileNameField.getText(), superUserName, false);
+			if (setPrivate.isSelected()) {
+				s3Util.S3MapUpload(mapToUpload, fileNameField.getText(),
+						superUserName, false);
+			} else {
+				s3Util.S3MapUpload(mapToUpload, fileNameField.getText(),
+						superUserName, true);
 			}
-			else{
-				s3Util.S3MapUpload(mapToUpload, fileNameField.getText(), superUserName, true);	
-			}
+			JOptionPane.showMessageDialog(this,
+					"The map is successfully submited");
 		}
-		
-		if(e.getSource() == inputField){
+
+		if (e.getSource() == inputField) {
 			System.out.print(inputField.getText());
-			gameProcessField.append("User input >> " + inputField.getText() + "\n");
+			gameProcessField.append("User input >> " + inputField.getText()
+					+ "\n");
 			String result = zork.action(inputField.getText());
 			gameProcessField.append(result + "\n\n");
 			inputField.setText("");
-			
-			
+
 		}
 
 		for (int i = 0; i < 8; i++) {
 			if (e.getSource() == mapButton[i]) {
-				if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+				if (guiRefresh == 1
+						&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 					content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 				}
 				S3Util s3util = new S3Util();
@@ -586,7 +614,8 @@ public class zorkGUI extends JFrame implements ActionListener {
 					zork = new Zork(currentGame);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(this,"The map is invalided!");
+					JOptionPane
+							.showMessageDialog(this, "The map is invalided!");
 					e1.printStackTrace();
 				}
 				gameProcessField.setText("");
@@ -596,25 +625,41 @@ public class zorkGUI extends JFrame implements ActionListener {
 			}
 
 		}
-		
+
 		for (int i = 0; i < 10; i++) {
 			if (e.getSource() == dataButton[i]) {
-				if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+				if (guiRefresh == 1
+						&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 					content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 				}
 				content.add(playPanel, BorderLayout.CENTER);
 				gameProcessField.append(zork.welcome + "\n");
 				gameProcessField.setText("");
+				try {
+					zork.loadGame(dataSlot.get(i));
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				gameProcessField.setText("Game continuing...\n");
 				saveGame.setEnabled(true);
 				guiRefresh = 1;
 			}
 		}
-		
+
 		for (int i = 0; i < 10; i++) {
 			if (e.getSource() == saveButton[i]) {
-				if (guiRefresh == 1 && bl.getLayoutComponent(BorderLayout.CENTER)!=null) {
+				if (guiRefresh == 1
+						&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 					content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 				}
+
+				String gameProcess = zork.saveGame(currentGame);
+				ZorkClient.saveData(superUserName, i, gameProcess);
+				content.add(playPanel, BorderLayout.CENTER);
+				gameProcessField.append("Game is successfully saved" + "\n");
+
 				guiRefresh = 1;
 			}
 		}

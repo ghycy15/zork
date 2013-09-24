@@ -25,8 +25,9 @@ public class ZorkClient {
 	 * @param userName
 	 * @param password
 	 * @return true if the server return true
+	 * @throws Exception 
 	 */
-	public static boolean login(String userName, String password) {
+	public static boolean login(String userName, String password) throws Exception {
 
 		Socket kkSocket = null;
 		PrintWriter out = null;
@@ -38,10 +39,13 @@ public class ZorkClient {
 					kkSocket.getInputStream()));
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host");
+			throw new Exception(e);
 		} catch (IOException e) {
 			System.err.println("Couldn't get I/O for the connection");
+			throw new Exception(e);
 		}
 
+		
 		out.println(LOGIN + SEPARATER + userName + SEPARATER + password);
 
 		String fromServer;
@@ -141,7 +145,7 @@ public class ZorkClient {
 		}
 
 		out.println(SAVEDATA + SEPARATER + userName + SEPARATER + dataSlot + SEPARATER + gameProcess);
-
+		System.out.println(SAVEDATA + SEPARATER + userName + SEPARATER + dataSlot + SEPARATER + gameProcess);
 		String fromServer;
 		boolean succFromServer = false;
 		try {

@@ -1293,11 +1293,27 @@ public class Zork {
 		    }
 		  }
 		 
-		  //implement here....., return save data to UI
-		  public String saveGame(String name){
-			  String result = name + ":;:" + currentRoom;
+		//implement here....., return  data to UI//filename:;:currentRoom:;:item1(in inventory):;:item2(in inventory)....
+		  public String saveGame(String filename){
+			  String result = filename + "::" + currentRoom;
+			  for (String item : Inventory.keySet())
+		      {
+		        result += "::"+item;
+		      }
 			  
-			  return null;
+			  return result;
+		  }
+		  
+		  //load game, get string such as: user name:;:currentRoom:;:item1(in inventory):;:item2(in inventory)............ 
+		  public void loadGame(String str) throws Exception{
+			  String[] temp = str.split("::");
+			  String filename = temp[0];
+			  String cuRoom = temp[1];
+			  Zork zork = new Zork(filename);
+			  zork.currentRoom = cuRoom;
+			  for(int i=2;i<temp.length;i++){
+				  zork.Inventory.put(temp[i],temp[i]);
+			  }
 		  }
 		  
 		/* Get a string from an element (XML parsing stuff)*/
