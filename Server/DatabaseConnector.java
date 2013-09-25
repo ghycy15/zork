@@ -101,7 +101,14 @@ public class DatabaseConnector {
 	}
 
 	public boolean isValidLogin(String name, String password) {
-		String query = "SELECT password FROM Users WHERE name='" + name + "'";
+		int userId = getUserId(name);
+		if(userId == -1) {
+			return false;
+		} else {
+			return true;
+		}
+
+		/*String query = "SELECT password FROM Users WHERE name='" + name + "'";
 		ResultSet rs = executeQuery(query);
 		if(rs == null) {
 			this.disconnect();
@@ -117,7 +124,7 @@ public class DatabaseConnector {
 			e.printStackTrace();
 		}
 		this.disconnect();
-		return result;
+		return result;*/
 	}
 
 	public boolean updateUserData(String name, String slotNo, String gameProgress) {
