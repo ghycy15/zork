@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <map>
   <room>
-    <name>Entrance入口</name>
+    <name>Entrance</name>
     <description>You find yourself at the mouth of a cave and decide that in spite of common sense and any sense of self preservation that you're going to go exploring north into it. It's a little dark, but luckily there are some torches on the wall.</description>
     <item>torch</item>
     <trigger>

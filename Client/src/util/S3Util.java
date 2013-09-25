@@ -63,11 +63,11 @@ public class S3Util {
 
 		}
 
-		PutObjectRequest por = new PutObjectRequest(bucketName, "maps/"
-				+ userName + "/" + name, file);
-
-		por.setCannedAcl(CannedAccessControlList.PublicRead);
-		s3.putObject(por);
+//		PutObjectRequest por = new PutObjectRequest(bucketName, "maps/"
+//				+ userName + "/" + name, file);
+//
+//		por.setCannedAcl(CannedAccessControlList.PublicRead);
+//		s3.putObject(por);
 
 		return true;
 	}
@@ -86,10 +86,10 @@ public class S3Util {
 		ObjectListing objects = s3.listObjects(listObjectsRequest);
 
 		for (S3ObjectSummary objectSummary : objects.getObjectSummaries()) {
-			if (!objectSummary.getKey().equals("maps/public")) {
+			//if (!objectSummary.getKey().equals("maps/public")) {
 				System.out.println("get map: " + objectSummary.getKey());
 				maps.add(objectSummary.getKey());
-			}
+			//}
 		}
 
 		ListObjectsRequest listObjectsRequest2 = new ListObjectsRequest()

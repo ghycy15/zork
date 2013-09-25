@@ -30,7 +30,7 @@ public class Zork {
 		    if (!file.canRead())
 		    {
 		      //System.out.println("Error opening file. Exiting...");
-		       welcome = "Error opening file. Exiting...";
+		      // welcome = "Error opening file. Exiting...";
 		    }
 
 		    try
@@ -556,7 +556,7 @@ public class Zork {
 		    }
 		    catch (Exception e)
 		    {
-		      System.out.println("Invalid XML file, exiting");
+		      //System.out.println("Invalid XML file, exiting");
 		      throw new Exception(e);
 		      //e.printStackTrace();
 		      }
@@ -566,6 +566,7 @@ public class Zork {
 		    ZorkContainer tempContainer;
 		    ZorkTrigger tempTrigger;
 		    currentRoom = "Entrance";
+		    //currentRoom = "";
 		    boolean skip = false;
 		    
 		    /* Print out the first entrance description, starting the game!*/
@@ -656,8 +657,9 @@ public class Zork {
 		            break;
 		          }
 		        }
+		        //............
 		        if (!found)
-		          //System.out.println("Error");
+		        	System.out.println("Error");
 		        	result = "Cannot take the item";
 		      }
 		    }
@@ -700,8 +702,8 @@ public class Zork {
 		    {
 		      tempString = input.split(" ")[1];
 		      ZorkItem tempItem;
-		      if (Inventory.get(tempString) != null)
-		      {
+		     // if (Inventory.get(tempString) != null)
+		      //{
 		        tempItem = Items.get(tempString);
 		        if (tempItem.writing != null && tempItem.writing != "")
 		        {
@@ -713,12 +715,12 @@ public class Zork {
 		          result = "Nothing written";
 		          //System.out.println("Nothing written.");
 		        }
-		      }
+		    /* }
 		      else
 		      {
 		    	result = "You cannot read this";  
 		       // System.out.println("Error");
-		      }
+		      }*/
 		    }
 		    /* Drop an item*/
 		    else if (input.startsWith("drop") && input.split(" ").length>=1)
@@ -729,7 +731,7 @@ public class Zork {
 		        ZorkRoom tempRoom = Rooms.get(currentRoom);
 		        tempRoom.item.put(tempString,tempString);
 		        Rooms.put(tempRoom.name,tempRoom);
-		        Inventory.remove(tempString);
+		        //Inventory.remove(tempString);
 		        //System.out.println(tempString+" dropped.");
 		        result = tempString + " dropped";
 		      }
@@ -744,10 +746,10 @@ public class Zork {
 		    {
 		      tempString = input.split(" ")[1];
 		      String destination = input.split(" ")[3];
-		      if (Rooms.get(currentRoom).container.get(destination) != null && Containers.get(destination).isOpen && Inventory.get(tempString) != null)
+		      if (Rooms.get(currentRoom).container.get(destination) != null && Inventory.get(tempString) != null)
 		      {
 		        tempContainer = Containers.get(destination);
-		        tempContainer.item.put(tempString,tempString);
+		        //tempContainer.item.put(tempString,tempString);
 		        Inventory.remove(tempString);
 		        //System.out.println("Item "+tempString+" added to "+destination+".");
 		        result = "Item "+tempString+" added to "+destination+".";
@@ -791,6 +793,7 @@ public class Zork {
 		        	result = "This item cannot be turned on";
 		      }
 		    }
+		    
 		    
 		    /* Attempt an attack, you feeling lucky?*/
 		    else if (input.startsWith("attack") && input.split(" ").length>=4)
@@ -839,8 +842,8 @@ public class Zork {
 		    else
 		    {
 		      //System.out.println("Error");
-	        	  result = "Invalid command";
-
+	        	 // result = "wrong command";
+		    	result = null;
 		    }
 		    userInput = "";
 		    checkAllTriggers();
@@ -852,11 +855,6 @@ public class Zork {
 		  }
 
 		
-		  
-		  
-		  
-		  
-		  
 		  
 		  
 		  /* Check triggers */
@@ -1077,7 +1075,6 @@ public class Zork {
 		    }
 		    else
 		    {
-		      //System.out.println("Can't go that way.");
 		    	String str = "Can't go that way";
 		    	return str;
 		    }
@@ -1142,7 +1139,7 @@ public class Zork {
 		      {
 		        ZorkRoom tempRoom = Rooms.get(destination);
 		        if (objectType.equals("item"))
-		          tempRoom.item.put(object,object);
+		          tempRoom.item.put(object,object); 
 		        else if (objectType.equals("creature"))
 		          tempRoom.creature.put(object,object);
 		        else if (objectType.equals("container"))
@@ -1250,48 +1247,50 @@ public class Zork {
 		  public String containerInventory(HashMap<String,String> Container, String Name)
 		  {
 		    String output = "";
-		    if (Container.isEmpty())
+		    /*if (Container.isEmpty())
 		    { 
 		      String str = Name + " is empty";
 		      //System.out.println(Name+" is empty");
 		      return str;
 		    }
 		    else
-		    {
+		    {*/
 		    	String str = Name+" contains";
 		      //System.out.print(Name+" contains ");
 		      for (String key : Container.keySet())
 		      {
 		        output += key+", ";
+		        break;
 		      }
 		      output = output.substring(0,output.length()-2);
 		      str = str + " " + output + ".";
 		      //System.out.println(output+".");
 		      return str;
 		    }
-		  }
+		  //}
 
 		  /* Print out the inventory when user types i */
 		  public String inventory()
 		  {
 		    String output = "Inventory: ";
-		    if (Inventory.isEmpty())
+		    /*if (Inventory.isEmpty())
 		    {
 		      String str = "Inventory: empty";
 		     // System.out.println("Inventory: empty");
 		      return str;
-		    }
-		    else
-		    {
+		    }*/
+		    //else
+		    //{
 		      for (String key : Inventory.keySet())
 		      {
 		        output += key+", ";
+		        break;
 		      }
 		      output = output.substring(0,output.length()-2);
 		      //System.out.println(output);
 		      return output;
 		    }
-		  }
+		  //}
 		 
 		//implement here....., return  data to UI//filename:;:currentRoom:;:item1(in inventory):;:item2(in inventory)....
 		  public String saveGame(String filename){
@@ -1310,8 +1309,7 @@ public class Zork {
 			  String filename = temp[0];
 			  String cuRoom = temp[1];
 			  Zork zork = null;
-			  System.out.println("here");
-			  try {
+			try {
 				zork = new Zork(filename);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -1321,7 +1319,7 @@ public class Zork {
 			  for(int i=2;i<temp.length;i++){
 				  zork.Inventory.put(temp[i],temp[i]);
 			  }
-			  System.out.println("here");
+			  
 			  return zork;
 		  }
 		  
@@ -1336,6 +1334,5 @@ public class Zork {
 		     }
 		     return "?";
 		  }
-		  
 
 }

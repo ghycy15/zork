@@ -50,7 +50,7 @@ public class ZorkClient {
 
 		String fromServer;
 		boolean succFromServer = false;
-		try {
+		//try {
 			while ((fromServer = in.readLine()) != null) {
 				System.out.println(fromServer);
 				if (fromServer.equals("Login:;:success")) {
@@ -65,9 +65,9 @@ public class ZorkClient {
 			in.close();
 			kkSocket.close();
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 
 		return succFromServer;
 	}
