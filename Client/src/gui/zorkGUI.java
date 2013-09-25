@@ -632,16 +632,18 @@ public class zorkGUI extends JFrame implements ActionListener {
 						&& bl.getLayoutComponent(BorderLayout.CENTER) != null) {
 					content.remove(bl.getLayoutComponent(BorderLayout.CENTER));
 				}
+				
 				content.add(playPanel, BorderLayout.CENTER);
-				gameProcessField.append(zork.welcome + "\n");
+				//gameProcessField.append(zork.welcome + "\n");
 				gameProcessField.setText("");
-				try {
-					zork.loadGame(dataSlot.get(i));
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+					System.out.println(dataSlot.get(i));
+					try{
+					zork = zork.loadGame(dataSlot.get(i));
+					} catch(Exception ex){
+						ex.printStackTrace();
+					}
 
+				currentGame = dataSlot.get(i).split("::")[0];
 				gameProcessField.setText("Game continuing...\n");
 				saveGame.setEnabled(true);
 				guiRefresh = 1;

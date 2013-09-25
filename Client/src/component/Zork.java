@@ -839,7 +839,7 @@ public class Zork {
 		    else
 		    {
 		      //System.out.println("Error");
-	        	  result = "Run command";
+	        	  result = "Invalid command";
 
 		    }
 		    userInput = "";
@@ -1305,15 +1305,24 @@ public class Zork {
 		  }
 		  
 		  //load game, get string such as: user name:;:currentRoom:;:item1(in inventory):;:item2(in inventory)............ 
-		  public void loadGame(String str) throws Exception{
+		  public static Zork loadGame(String str) {
 			  String[] temp = str.split("::");
 			  String filename = temp[0];
 			  String cuRoom = temp[1];
-			  Zork zork = new Zork(filename);
+			  Zork zork = null;
+			  System.out.println("here");
+			  try {
+				zork = new Zork(filename);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			  zork.currentRoom = cuRoom;
 			  for(int i=2;i<temp.length;i++){
 				  zork.Inventory.put(temp[i],temp[i]);
 			  }
+			  System.out.println("here");
+			  return zork;
 		  }
 		  
 		/* Get a string from an element (XML parsing stuff)*/

@@ -1,0 +1,13 @@
+Team Member:
+	Yi Qin Deng & Huyue Gu
+
+Work Distribution:
+	Yi Qin Deng: KeyScan, IndexScan, Selection, SortMergeJoin
+	Huyue Gu: FileScan, Projection, SimpleJoin, SortMergeJoin
+
+How to run the code:
+	We are not providing any Makefile because we used Eclipse to run our code.
+	Just simple import the extracted folder to Eclipse, and Run it.
+	
+Work Status:
+	All tests have been passed with no exception.
