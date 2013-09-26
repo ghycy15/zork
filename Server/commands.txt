@@ -3,8 +3,8 @@
 -------------------------------------------------------------------
 			User
 -------------------------------------------------------------------
-Resgister <username> <password>
-Resgister success/fail
+Register <username> <password>
+Register success/fail
 
 Login <username> <password>
 Login sucess/fail
